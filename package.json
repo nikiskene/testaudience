@@ -1,0 +1,14 @@
+{
+  "name": "lead-magnet-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate-audience.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.55.0",
+    "@faker-js/faker": "^9.9.0",
+    "dotenv": "^17.2.1"
+  }
+}
