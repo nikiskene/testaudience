@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Filters, Message, Motive, Offer, Simulation, SimulationSummary } from './types';
+import type { Filters, Message, Motive, Offer, SemanticProfile, Simulation, SimulationSummary } from './types';
 
 export async function listOffers(){const{data,error}=await supabase.from('lms_offers').select('*').order('created_at');if(error)throw error;return(data??[])as Offer[]}
 export async function listMotives(){const{data,error}=await supabase.from('lms_motives').select('*').order('created_at');if(error)throw error;return(data??[])as Motive[]}
@@ -12,6 +12,10 @@ export async function archive(table:'lms_offers'|'lms_motives',id:string){const{
 
 export async function saveMessage(row:{offer_id:string;motive_id:string|null;name:string;subject_line:string;body:string;parent_message_id?:string|null;version_number?:number}){const{data,error}=await supabase.from('lms_messages').insert({...row,version_number:row.version_number??1,parent_message_id:row.parent_message_id??null}).select('*').single();if(error)throw error;return data as Message}
 export async function createRevision(message:Message){return saveMessage({offer_id:message.offer_id,motive_id:message.motive_id,name:message.name,subject_line:message.subject_line,body:message.body,parent_message_id:message.parent_message_id??message.id,version_number:message.version_number+1})}
+
+export async function getSemanticProfile(messageId:string){const{data,error}=await supabase.from('lms_message_semantics').select('*').eq('message_id',messageId).maybeSingle();if(error)throw error;return(data??null)as SemanticProfile|null}
+export async function saveSemanticProfile(profile:SemanticProfile){const payload={...profile,id:undefined,created_at:undefined,updated_at:undefined};const{data,error}=await supabase.from('lms_message_semantics').upsert(payload,{onConflict:'message_id'}).select('*').single();if(error)throw error;return data as SemanticProfile}
+export async function analyzeMessage(messageId:string){const{data,error}=await supabase.functions.invoke('analyze-message',{body:{message_id:messageId}});if(error)throw error;if(data?.error)throw new Error(data.error);return data.profile as SemanticProfile}
 
 export async function audienceCount(filters:Filters){const{data,error}=await supabase.rpc('lms_audience_count',{p_filters:{audience:filters.audience||null,country:filters.country||null,region:filters.region||null,industry:filters.industry||null,purchasing_power:filters.power||null,ageMin:filters.ageMin||null,ageMax:filters.ageMax||null}});if(error)throw error;return Number(data??0)}
 export async function createSimulation(row:{message_id:string;offer_id:string;name:string;filters:Filters;audience_size:number;sample_size:number}){const{data,error}=await supabase.from('lms_simulations').insert({message_id:row.message_id,offer_id:row.offer_id,name:row.name,audience_filter:row.filters,audience_size:row.audience_size,sample_size:row.sample_size,status:'ready_for_simulation'}).select('*').single();if(error)throw error;return data as Simulation}
