@@ -83,6 +83,7 @@ begin
   ), psych as (
     select s.*,
       ((('x'||substr(md5(s.id::text||v_sim.message_id::text),1,4))::bit(16)::int%31)-15) jitter,
+      ((('x'||substr(md5(s.id::text||v_sim.message_id::text||':read'),1,4))::bit(16)::int%31)-15) read_jitter,
       greatest(0,least(100,round(
         8 + email_attention*.18 + v_sem.subject_open_pull*.32 + curiosity*.06 + v_sem.intellectual_tension*.04 + v_sem.personal_relevance*.03
         - skepticism*.06 - v_sem.sales_smell*.05 - case when seniority in('executive','senior_leadership','partner') then 5 else 1 end
@@ -95,7 +96,7 @@ begin
   ), meaning as (
     select p.*,
       greatest(0,least(100,base_attention+jitter*.55))::int attention,
-      greatest(0,least(100,base_read_pull+jitter*.35))::int read_pull,
+      greatest(0,least(100,base_read_pull+read_jitter*.55))::int read_pull,
       greatest(0,least(100,round(
         case
           when audience_segment='cxo' then v_sem.personal_relevance*.30+v_sem.usefulness*.24+v_sem.risk_reduction*.16+v_sem.urgency*.08+decision_authority*.10+curiosity*.06
@@ -110,7 +111,7 @@ begin
   ), scored as (
     select m.*,
       (attention>=44) opened_flag,
-      (attention>=44 and read_pull>=45) read_flag,
+      (attention>=44 and read_pull>=52) read_flag,
       greatest(0,least(100,round(attention*.13+read_pull*.15+relevance*.25+credibility_score*.17+novelty_score*.08+emotional_score*.06+
         v_sem.usefulness*.08+v_sem.urgency*.04+willingness_to_travel*.03+discretionary_spending_power*.03-price_sensitivity*.05-approval_complexity*.04)))::int interest,
       greatest(0,least(100,round(8+v_sem.cta_strength*.13+v_sem.proposition_clarity*.10+v_sem.risk_reduction*.10+v_sem.urgency*.07+

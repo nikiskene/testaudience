@@ -14,7 +14,7 @@ export default function Results(){
     {error&&<div className="error">{error}</div>}
     {!selected?<div className="empty">No simulations yet.</div>:!summary?<div className="empty">Loading…</div>:total===0?<div className="empty">This simulation has no responses yet.</div>:<>
       <div className="cards result-cards"><Metric label="Audience tested" value={total}/><Metric label="Open rate" value={`${summary.open_rate}%`}/><Metric label="Read rate" value={`${summary.read_rate}%`}/><Metric label="Avg activation" value={`${summary.avg_activation}/10`}/><Metric label="Activation rate 7–10" value={`${summary.success_rate}%`}/></div>
-      <div className="ladder">{labels.map((label,i)=>{const n=summary[`level_${i}` as keyof SimulationSummary] as number;return <div className={i>=7?'ladder-row win':'ladder-row'} key={i}><b>{i}</b><span>{label}</span><div><i style={{width:`${pct(n)}%`}}/></div><strong>{pct(n)}%</strong></div>})}</div>
+      <div className="card activation-table">{labels.map((label,i)=>{const n=summary[`level_${i}` as keyof SimulationSummary] as number;return <div className={i>=7?'activation-row success-level':'activation-row'} key={i}><b>{i}</b><span className="activation-label">{label}</span><div className="activation-bar"><i style={{width:`${pct(n)}%`}}/></div><strong className="activation-pct">{pct(n)}%</strong></div>})}</div>
       <div className="cards"><Metric label="Interest" value={summary.avg_interest}/><Metric label="Credibility" value={summary.avg_credibility}/><Metric label="Relevance" value={summary.avg_relevance}/><Metric label="Novelty" value={summary.avg_novelty}/><Metric label="Emotional resonance" value={summary.avg_emotional_resonance}/></div>
     </>}
   </>;
