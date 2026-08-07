@@ -17,6 +17,7 @@ declare
 begin
   select * into v_sim from public.lms_simulations where id = p_sim_id;
   if not found then raise exception 'Simulation not found'; end if;
+  if v_sim.user_id <> auth.uid() then raise exception 'Access denied'; end if;
 
   if v_sim.status not in ('ready_for_simulation','failed') then
     raise exception 'Simulation status % cannot be run', v_sim.status;
@@ -65,7 +66,6 @@ begin
   ),
   features as (
     select s.*,
-      -- Message-specific semantic signals. Kept deliberately transparent and calibratable.
       (case when v_text ~ '(apple|cupertino|silicon valley|shenzhen|china|ces|sxsw)' then 12 else 0 end) as specificity_bonus,
       (case when v_text ~ '([0-9]{1,3}%|three months|90.day|since 20|\$|€)' then 10 else 0 end) as evidence_bonus,
       (case when v_text ~ '(unlock|transform your life|game.?changer|revolutionary|world.?class|synergy|journey of transformation)' then 14 else 0 end) as hype_penalty,
