@@ -12,6 +12,7 @@ export async function archive(table:'lms_offers'|'lms_motives',id:string){const{
 
 export async function saveMessage(row:{offer_id:string;motive_id:string|null;name:string;subject_line:string;body:string;parent_message_id?:string|null;version_number?:number}){const{data,error}=await supabase.from('lms_messages').insert({...row,version_number:row.version_number??1,parent_message_id:row.parent_message_id??null}).select('*').single();if(error)throw error;return data as Message}
 export async function createRevision(message:Message){return saveMessage({offer_id:message.offer_id,motive_id:message.motive_id,name:message.name,subject_line:message.subject_line,body:message.body,parent_message_id:message.parent_message_id??message.id,version_number:message.version_number+1})}
+export async function deleteMessage(id:string){const{error}=await supabase.from('lms_messages').delete().eq('id',id);if(error)throw error}
 
 export async function getSemanticProfile(messageId:string){const{data,error}=await supabase.from('lms_message_semantics').select('*').eq('message_id',messageId).maybeSingle();if(error)throw error;return(data??null)as SemanticProfile|null}
 export async function saveSemanticProfile(profile:SemanticProfile){const payload={...profile,id:undefined,created_at:undefined,updated_at:undefined};const{data,error}=await supabase.from('lms_message_semantics').upsert(payload,{onConflict:'message_id'}).select('*').single();if(error)throw error;return data as SemanticProfile}
