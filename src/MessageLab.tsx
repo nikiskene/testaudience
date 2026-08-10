@@ -1,3 +1,4 @@
+import'./messageLab.css';
 import{useEffect,useMemo,useState}from'react';import{analyzeMessage,createRevision,deleteMessage,getSemanticProfile,listMessages,listMotives,listOffers,saveMessage,saveSemanticProfile}from'./phase2Api';import type{Message,Motive,Offer,SemanticProfile}from'./types';import SemanticPanel from'./SemanticPanel';
 
 export default function MessageLab(){
