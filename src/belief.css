@@ -1,0 +1,142 @@
+.belief-layout {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.7fr) minmax(0, 1.8fr);
+  gap: 16px;
+  align-items: start;
+}
+.hypothesis-list {
+  display: grid;
+  gap: 6px;
+}
+.hypothesis-item {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  cursor: pointer;
+}
+.hypothesis-item.active {
+  border-color: #111;
+  background: #f7f7f7;
+}
+.hypothesis-item b,
+.hypothesis-item span {
+  display: block;
+}
+.hypothesis-item span {
+  font-size: 11px;
+  color: #777;
+  margin-top: 4px;
+  text-transform: capitalize;
+}
+.hypothesis-editor textarea {
+  min-height: 70px;
+}
+.segment-picker {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 9px 10px;
+  display: flex;
+  gap: 16px;
+}
+.segment-picker legend {
+  font-size: 11px;
+  color: #555;
+}
+.segment-picker label {
+  display: flex;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 5px;
+}
+.segment-picker input {
+  width: auto;
+}
+.step-kicker {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: #777;
+  margin-bottom: 4px;
+}
+.analysis-block {
+  border-top: 1px solid #e6e6e6;
+  padding-top: 18px;
+  margin-top: 8px;
+}
+.analysis-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 14px 0;
+}
+.mini-score {
+  border: 1px solid #e7e7e7;
+  border-radius: 6px;
+  padding: 10px;
+}
+.mini-score span,
+.mini-score b {
+  display: block;
+}
+.mini-score span {
+  font-size: 10px;
+  color: #777;
+  text-transform: uppercase;
+}
+.mini-score b {
+  margin-top: 6px;
+}
+.diagnosis {
+  background: #f5f5f5;
+  border-left: 3px solid #111;
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.evaluation-groups > section {
+  border-top: 1px solid #eee;
+  padding-top: 14px;
+  margin-top: 14px;
+}
+.evaluation-groups .semantic-grid {
+  margin: 10px 0;
+}
+.improve-panel {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+.improve-panel textarea {
+  min-height: 80px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+}
+.result-sections > section > h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.result-sections .cards {
+  margin-bottom: 18px;
+}
+.compact-empty {
+  padding: 25px;
+}
+@media (max-width: 800px) {
+  .belief-layout {
+    grid-template-columns: 1fr;
+  }
+  .score-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

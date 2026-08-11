@@ -1,7 +1,127 @@
-import{useEffect,useState}from'react';import type{Session}from'@supabase/supabase-js';import{Menu,X}from'lucide-react';import{supabase}from'./supabase';import Login from'./Login';import Dashboard from'./Dashboard';import Market from'./Market';import Crud from'./Crud';import MessageLab from'./MessageLab';import Simulation from'./Simulation';import Results from'./Results';
-type View='dashboard'|'market'|'segments'|'motives'|'offers'|'messages'|'simulations'|'results'|'settings';
-const views:View[]=['dashboard','market','segments','motives','offers','messages','simulations','results','settings'];
-export default function App(){const[session,setSession]=useState<Session|null>(null),[loading,setLoading]=useState(true),[view,setView]=useState<View>('dashboard'),[navOpen,setNavOpen]=useState(false);useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setLoading(false)});const{data}=supabase.auth.onAuthStateChange((_e,s)=>setSession(s));return()=>data.subscription.unsubscribe()},[]);if(loading)return <main className="login">Loading…</main>;if(!session)return <Login/>;const selectView=(v:View)=>{setView(v);setNavOpen(false)};return <div className="shell"><button className="nav-toggle" onClick={()=>setNavOpen(v=>!v)} aria-label={navOpen?'Close menu':'Open menu'}>{navOpen?<X size={21}/>:<Menu size={21}/>}</button>{navOpen&&<button className="nav-backdrop" aria-label="Close menu" onClick={()=>setNavOpen(false)}/>}<aside className={navOpen?'open':''}><div className="brand"><b>LMS</b><span>Lead Magnet Simulator</span></div><nav>{views.map(v=><button key={v} className={view===v?'active':''} onClick={()=>selectView(v)}>{label(v)}</button>)}</nav><button className="signout" onClick={()=>supabase.auth.signOut()}>Sign out</button></aside><main className="content">{render(view)}</main></div>}
-function render(view:View){if(view==='dashboard')return <Dashboard/>;if(view==='market')return <Market/>;if(view==='motives')return <Crud kind="motives"/>;if(view==='offers')return <Crud kind="offers"/>;if(view==='messages')return <MessageLab/>;if(view==='simulations')return <Simulation/>;if(view==='results')return <Results/>;return <Placeholder view={view}/>}
-function label(v:View){if(v==='market')return'Synthetic Market';if(v==='messages')return'Message Lab';return v[0].toUpperCase()+v.slice(1)}
-function Placeholder({view}:{view:View}){const copy:Record<string,string>={segments:'Saved audience slices remain available from the Synthetic Market.',settings:'System connected to Supabase.'};return <><div className="page-head"><div><h1>{label(view)}</h1><p>{copy[view]}</p></div></div><div className="empty">{copy[view]}</div></>}
+import "./belief.css";
+import { useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { Menu, X } from "lucide-react";
+import { supabase } from "./supabase";
+import Login from "./Login";
+import Dashboard from "./Dashboard";
+import Market from "./Market";
+import Crud from "./Crud";
+import HypothesisLab from "./HypothesisLab";
+import MessageLab from "./MessageLab";
+import Simulation from "./Simulation";
+import Results from "./Results";
+type View =
+  | "dashboard"
+  | "market"
+  | "segments"
+  | "motives"
+  | "offers"
+  | "messages"
+  | "simulations"
+  | "results"
+  | "settings";
+const views: View[] = [
+  "dashboard",
+  "market",
+  "segments",
+  "motives",
+  "offers",
+  "messages",
+  "simulations",
+  "results",
+  "settings",
+];
+export default function App() {
+  const [session, setSession] = useState<Session | null>(null),
+    [loading, setLoading] = useState(true),
+    [view, setView] = useState<View>("dashboard"),
+    [navOpen, setNavOpen] = useState(false);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setLoading(false);
+    });
+    const { data } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    return () => data.subscription.unsubscribe();
+  }, []);
+  if (loading) return <main className="login">Loading…</main>;
+  if (!session) return <Login />;
+  const selectView = (v: View) => {
+    setView(v);
+    setNavOpen(false);
+  };
+  return (
+    <div className="shell">
+      <button
+        className="nav-toggle"
+        onClick={() => setNavOpen((v) => !v)}
+        aria-label={navOpen ? "Close menu" : "Open menu"}
+      >
+        {navOpen ? <X size={21} /> : <Menu size={21} />}
+      </button>
+      {navOpen && (
+        <button
+          className="nav-backdrop"
+          aria-label="Close menu"
+          onClick={() => setNavOpen(false)}
+        />
+      )}
+      <aside className={navOpen ? "open" : ""}>
+        <div className="brand">
+          <b>LMS</b>
+          <span>Lead Magnet Simulator</span>
+        </div>
+        <nav>
+          {views.map((v) => (
+            <button
+              key={v}
+              className={view === v ? "active" : ""}
+              onClick={() => selectView(v)}
+            >
+              {label(v)}
+            </button>
+          ))}
+        </nav>
+        <button className="signout" onClick={() => supabase.auth.signOut()}>
+          Sign out
+        </button>
+      </aside>
+      <main className="content">{render(view)}</main>
+    </div>
+  );
+}
+function render(view: View) {
+  if (view === "dashboard") return <Dashboard />;
+  if (view === "market") return <Market />;
+  if (view === "motives") return <HypothesisLab />;
+  if (view === "offers") return <Crud kind="offers" />;
+  if (view === "messages") return <MessageLab />;
+  if (view === "simulations") return <Simulation />;
+  if (view === "results") return <Results />;
+  return <Placeholder view={view} />;
+}
+function label(v: View) {
+  if (v === "market") return "Synthetic Market";
+  if (v === "motives") return "Hypothesis Lab";
+  if (v === "messages") return "Message Lab";
+  return v[0].toUpperCase() + v.slice(1);
+}
+function Placeholder({ view }: { view: View }) {
+  const copy: Record<string, string> = {
+    segments:
+      "Saved audience slices remain available from the Synthetic Market.",
+    settings: "System connected to Supabase.",
+  };
+  return (
+    <>
+      <div className="page-head">
+        <div>
+          <h1>{label(view)}</h1>
+          <p>{copy[view]}</p>
+        </div>
+      </div>
+      <div className="empty">{copy[view]}</div>
+    </>
+  );
+}
